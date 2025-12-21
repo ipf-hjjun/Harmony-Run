@@ -173,10 +173,29 @@
       try {
         if (window.Runner && window.Runner.instance_) {
           var runner = window.Runner.instance_;
-          runner.highestScore = Math.max(
-            Number(runner.highestScore) || 0,
-            Number(score) || 0
-          );
+          var coefficient =
+            runner.distanceMeter && runner.distanceMeter.config
+              ? Number(runner.distanceMeter.config.COEFFICIENT)
+              : null;
+          if (!coefficient || Number.isNaN(coefficient)) return;
+
+          var targetScore = Number(score);
+          if (Number.isNaN(targetScore)) return;
+
+          // Convert displayed score back to pixels so the in-game HI rendering matches.
+          var basePixels = Math.round(targetScore / coefficient);
+          var bestPixels = basePixels;
+          for (var d = -5; d <= 5; d++) {
+            var candidate = basePixels + d;
+            if (candidate < 0) continue;
+            var candidateScore = Math.round(candidate * coefficient);
+            if (candidateScore === targetScore) {
+              bestPixels = candidate;
+              break;
+            }
+          }
+
+          runner.highestScore = Math.max(Number(runner.highestScore) || 0, bestPixels);
           if (
             runner.distanceMeter &&
             typeof runner.distanceMeter.setHighScore === "function"

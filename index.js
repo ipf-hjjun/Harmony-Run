@@ -897,9 +897,10 @@
 
       // Notify UI layer (e.g., leaderboard integration).
       try {
+        var score = this.distanceMeter.getActualDistance(Math.ceil(this.distanceRan));
         window.dispatchEvent(
           new CustomEvent("trex:gameover", {
-            detail: { score: Math.ceil(this.distanceRan) },
+            detail: { score: score },
           })
         );
       } catch (e) {}
