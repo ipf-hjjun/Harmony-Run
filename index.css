@@ -2,7 +2,8 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file. */
 
-html, body {
+html,
+body {
   padding: 0;
   margin: 0;
   width: 100%;
@@ -16,14 +17,16 @@ html, body {
 }
 
 .icon-offline {
-  content: -webkit-image-set( url(assets/default_100_percent/100-error-offline.png) 1x, url(assets/default_200_percent/200-error-offline.png) 2x);
+  content: -webkit-image-set(
+    url(assets/default_100_percent/100-error-offline.png) 1x,
+    url(assets/default_200_percent/200-error-offline.png) 2x
+  );
   position: relative;
 }
 
 .hidden {
   display: none;
 }
-
 
 /* Offline page */
 
@@ -57,7 +60,7 @@ html, body {
 }
 
 .offline .controller {
-  background: rgba(247, 247, 247, .1);
+  background: rgba(247, 247, 247, 0.1);
   height: 100vh;
   left: 0;
   position: absolute;
@@ -71,7 +74,8 @@ html, body {
 }
 
 @media (max-width: 420px) {
-  .suggested-left > #control-buttons, .suggested-right > #control-buttons {
+  .suggested-left > #control-buttons,
+  .suggested-right > #control-buttons {
     float: none;
   }
   .snackbar {
@@ -104,7 +108,7 @@ html, body {
   }
 }
 
-@media (min-width: 420px) and (max-width: 736px) and (min-height: 240px) and (max-height: 420px) and (orientation:landscape) {
+@media (min-width: 420px) and (max-width: 736px) and (min-height: 240px) and (max-height: 420px) and (orientation: landscape) {
   .interstitial-wrapper {
     margin-bottom: 100px;
   }
@@ -162,4 +166,130 @@ html, body {
   transform-origin: top center;
   transition: transform 250ms cubic-bezier(0.4, 0, 1, 1) 400ms;
   z-index: 2;
+}
+
+/* T-Rex overlay UI (name + leaderboard) */
+.trex-overlay {
+  align-items: center;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 16px;
+  position: fixed;
+  z-index: 9999;
+}
+
+.trex-overlay.hidden {
+  display: none;
+}
+
+.trex-overlay__card {
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  max-width: 560px;
+  padding: 16px;
+  width: 100%;
+}
+
+.trex-overlay__title {
+  font-family: "Open Sans", sans-serif;
+  font-size: 20px;
+  margin: 0 0 12px;
+  text-align: center;
+}
+
+.trex-field {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: auto 1fr auto;
+}
+
+.trex-field__label {
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+}
+
+.trex-field__input {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  font-size: 14px;
+  padding: 10px 12px;
+}
+
+.trex-button {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 10px 12px;
+}
+
+.trex-button--primary {
+  background: #111;
+  border-color: #111;
+  color: #fff;
+}
+
+.trex-status {
+  color: rgba(0, 0, 0, 0.7);
+  font-family: "Open Sans", sans-serif;
+  font-size: 12px;
+  margin-top: 10px;
+  min-height: 16px;
+}
+
+.trex-leaderboard {
+  margin-top: 14px;
+}
+
+.trex-leaderboard__header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.trex-leaderboard__title {
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.trex-leaderboard__list {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 10px;
+  margin: 0;
+  max-height: 260px;
+  overflow: auto;
+  padding: 8px 10px;
+}
+
+.trex-leaderboard__item {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+}
+
+.trex-leaderboard__item + .trex-leaderboard__item {
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.trex-leaderboard__item--highlight {
+  font-weight: 700;
+}
+
+.trex-leaderboard__item--empty {
+  color: rgba(0, 0, 0, 0.6);
+  padding: 10px 0;
+}
+
+.trex-leaderboard__name,
+.trex-leaderboard__score {
+  font-family: "Open Sans", sans-serif;
+  font-size: 13px;
 }
