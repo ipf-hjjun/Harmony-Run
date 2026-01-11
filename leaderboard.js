@@ -218,16 +218,13 @@
       if (!supabaseClient) return { ok: false, reason: "missing_supabase" };
 
       setSubmitStatus("Submitting score...");
-      var incomingScore = Number(score);
-      var insertResult = await supabaseClient.from("scores").insert({
-        name: name,
-        score: incomingScore,
+      var incomingScore = Math.trunc(Number(score));
+      var invokeResult = await supabaseClient.functions.invoke("submit-score", {
+        body: { name: name, score: incomingScore },
       });
 
-      if (insertResult.error) {
-        setSubmitStatus(
-          "Failed to submit score: " + insertResult.error.message
-        );
+      if (invokeResult.error) {
+        setSubmitStatus("Failed to submit score: " + invokeResult.error.message);
         return { ok: false, reason: "error" };
       }
 
