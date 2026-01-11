@@ -116,6 +116,10 @@
 
     var supabaseClient = createSupabaseClient();
     var lastHighlight = null;
+    var refreshInFlight = false;
+    var manualRefreshCooldownMs = 1500;
+    var lastManualRefreshAt = 0;
+    var manualRefreshTimerId = null;
 
     function setOverlayStatus(text) {
       setText(statusEl, text || "");
@@ -206,10 +210,29 @@
       } catch (e) {}
     }
 
+    function getManualRefreshRemainingMs() {
+      if (!lastManualRefreshAt) return 0;
+      var remaining = manualRefreshCooldownMs - (Date.now() - lastManualRefreshAt);
+      return Math.max(0, remaining);
+    }
+
+    function updateRefreshButtonState() {
+      if (!refreshButtonEl) return;
+      refreshButtonEl.disabled = refreshInFlight || getManualRefreshRemainingMs() > 0;
+    }
+
     async function refreshLeaderboard() {
       if (!leaderboardListEl) return;
-      var rows = await fetchTop10();
-      renderLeaderboard(leaderboardListEl, rows, lastHighlight);
+      if (refreshInFlight) return;
+      refreshInFlight = true;
+      updateRefreshButtonState();
+      try {
+        var rows = await fetchTop10();
+        renderLeaderboard(leaderboardListEl, rows, lastHighlight);
+      } finally {
+        refreshInFlight = false;
+        updateRefreshButtonState();
+      }
     }
 
     async function submitScore(score) {
@@ -297,6 +320,23 @@
 
     if (refreshButtonEl) {
       refreshButtonEl.addEventListener("click", function () {
+        var remaining = getManualRefreshRemainingMs();
+        if (remaining > 0) {
+          setSubmitStatus(
+            "Please wait " + Math.ceil(remaining / 1000) + "s before refreshing again."
+          );
+          updateRefreshButtonState();
+          return;
+        }
+
+        lastManualRefreshAt = Date.now();
+        if (manualRefreshTimerId) clearTimeout(manualRefreshTimerId);
+        manualRefreshTimerId = setTimeout(function () {
+          manualRefreshTimerId = null;
+          updateRefreshButtonState();
+        }, manualRefreshCooldownMs);
+
+        updateRefreshButtonState();
         refreshLeaderboard();
       });
     }
