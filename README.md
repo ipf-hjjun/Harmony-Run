@@ -39,3 +39,13 @@ If you use Supabase CLI, typical commands are:
 
 - `supabase functions deploy submit-score --no-verify-jwt`
 - `supabase secrets set SUPABASE_SERVICE_ROLE_KEY=...`
+
+## Netlify build (minify/obfuscate)
+
+Netlify should publish `dist/` (see `netlify.toml`). The build runs `npm run build`, which generates:
+
+- `dist/index.html` (rewrites script tags)
+- `dist/index.min.js`, `dist/leaderboard.min.js` (minified + obfuscated)
+- `dist/index.css`, `dist/assets/*`
+
+Note: obfuscation is not a security boundary; public APIs are still callable via network tools.
