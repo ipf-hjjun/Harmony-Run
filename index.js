@@ -373,6 +373,9 @@
       );
 
       this.canvasCtx = this.canvas.getContext("2d");
+      this.canvasCtx.imageSmoothingEnabled = false;
+      this.canvasCtx.webkitImageSmoothingEnabled = false;
+      this.canvasCtx.mozImageSmoothingEnabled = false;
       this.canvasCtx.fillStyle = "#f7f7f7";
       this.canvasCtx.fill();
       Runner.updateCanvasScaling(this.canvas);
@@ -1045,33 +1048,45 @@
    */
   Runner.updateCanvasScaling = function (canvas, opt_width, opt_height) {
     var context = canvas.getContext("2d");
+    context.imageSmoothingEnabled = false;
+    context.webkitImageSmoothingEnabled = false;
+    context.mozImageSmoothingEnabled = false;
 
     // Query the various pixel ratios
-    var devicePixelRatio = Math.floor(window.devicePixelRatio) || 1;
+    var devicePixelRatio = window.devicePixelRatio || 1;
     var backingStoreRatio =
-      Math.floor(context.webkitBackingStorePixelRatio) || 1;
+      context.webkitBackingStorePixelRatio ||
+      context.mozBackingStorePixelRatio ||
+      context.msBackingStorePixelRatio ||
+      context.oBackingStorePixelRatio ||
+      context.backingStorePixelRatio ||
+      1;
     var ratio = devicePixelRatio / backingStoreRatio;
+    // Prefer an integer scale factor to avoid subpixel shimmering/ghosting when
+    // browser zoom makes devicePixelRatio fractional.
+    var renderRatio = Math.max(1, Math.round(ratio));
 
     // Upscale the canvas if the two ratios don't match
-    if (devicePixelRatio !== backingStoreRatio) {
+    if (renderRatio !== 1) {
       var oldWidth = opt_width || canvas.width;
       var oldHeight = opt_height || canvas.height;
 
-      canvas.width = oldWidth * ratio;
-      canvas.height = oldHeight * ratio;
+      canvas.width = Math.round(oldWidth * renderRatio);
+      canvas.height = Math.round(oldHeight * renderRatio);
 
       canvas.style.width = oldWidth + "px";
       canvas.style.height = oldHeight + "px";
 
       // Scale the context to counter the fact that we've manually scaled
       // our canvas element.
-      context.scale(ratio, ratio);
+      context.setTransform(renderRatio, 0, 0, renderRatio, 0, 0);
       return true;
-    } else if (devicePixelRatio == 1) {
-      // Reset the canvas width / height. Fixes scaling bug when the page is
-      // zoomed and the devicePixelRatio changes accordingly.
-      canvas.style.width = canvas.width + "px";
-      canvas.style.height = canvas.height + "px";
+    } else {
+      // Ensure the CSS size matches the logical size (prevents browser scaling).
+      var cssWidth = opt_width || canvas.width;
+      var cssHeight = opt_height || canvas.height;
+      canvas.style.width = cssWidth + "px";
+      canvas.style.height = cssHeight + "px";
     }
     return false;
   };

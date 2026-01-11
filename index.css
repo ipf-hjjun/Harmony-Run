@@ -8,6 +8,34 @@ body {
   margin: 0;
   width: 100%;
   height: 100%;
+  background: transparent;
+}
+
+:root {
+  --trex-font: "Nunito", "Open Sans", system-ui, -apple-system, Segoe UI, Roboto,
+    Helvetica, Arial, sans-serif;
+  --trex-text: #1f2937;
+  --trex-muted: rgba(31, 41, 55, 0.7);
+  --trex-card: rgba(255, 255, 255, 0.88);
+  --trex-card-border: rgba(255, 255, 255, 0.7);
+  --trex-shadow: 0 18px 55px rgba(15, 23, 42, 0.22);
+  --trex-accent-1: #ff6fb1;
+  --trex-accent-2: #7c5cff;
+  --trex-outline: rgba(124, 92, 255, 0.35);
+}
+
+body.offline {
+  background:
+    radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.25) 0 1px, transparent 2px),
+    radial-gradient(circle at 72% 14%, rgba(255, 255, 255, 0.18) 0 1px, transparent 2px),
+    radial-gradient(circle at 46% 38%, rgba(255, 255, 255, 0.14) 0 1px, transparent 2px),
+    radial-gradient(circle at 88% 42%, rgba(255, 255, 255, 0.12) 0 1px, transparent 2px),
+    radial-gradient(circle at 32% 62%, rgba(255, 255, 255, 0.10) 0 1px, transparent 2px),
+    radial-gradient(circle at 12% 78%, rgba(255, 255, 255, 0.08) 0 1px, transparent 2px),
+    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.08) 0 1px, transparent 2px),
+    linear-gradient(to bottom, #070815 0%, #120b26 45%, #2a1248 100%);
+  color: rgba(238, 236, 255, 0.92);
+  font-family: var(--trex-font);
 }
 
 .icon {
@@ -31,7 +59,7 @@ body {
 /* Offline page */
 
 .offline .interstitial-wrapper {
-  color: #2b2b2b;
+  color: rgba(238, 236, 255, 0.92);
   font-size: 1em;
   line-height: 1.55;
   margin: 0 auto;
@@ -50,6 +78,14 @@ body {
 }
 
 .offline .runner-canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.35),
+    0 0 0 6px rgba(124, 92, 255, 0.08);
   height: 150px;
   max-width: 600px;
   opacity: 1;
@@ -60,7 +96,7 @@ body {
 }
 
 .offline .controller {
-  background: rgba(247, 247, 247, 0.1);
+  background: transparent;
   height: 100vh;
   left: 0;
   position: absolute;
@@ -171,13 +207,14 @@ body {
 /* T-Rex overlay UI (name + leaderboard) */
 .trex-overlay {
   align-items: center;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(10, 8, 22, 0.55);
   display: flex;
   inset: 0;
   justify-content: center;
   padding: 16px;
   position: fixed;
   z-index: 9999;
+  backdrop-filter: blur(8px);
 }
 
 .trex-overlay.hidden {
@@ -185,17 +222,32 @@ body {
 }
 
 .trex-overlay__card {
-  background: rgba(255, 255, 255, 0.96);
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  background: var(--trex-card);
+  border: 1px solid var(--trex-card-border);
+  border-radius: 20px;
+  box-shadow: var(--trex-shadow);
+  color: var(--trex-text);
   max-width: 560px;
   padding: 16px;
   width: 100%;
+  animation: trex-pop-in 180ms ease-out;
+}
+
+@keyframes trex-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .trex-overlay__title {
-  font-family: "Open Sans", sans-serif;
-  font-size: 20px;
+  font-family: var(--trex-font);
+  font-size: 22px;
+  font-weight: 800;
   margin: 0 0 12px;
   text-align: center;
 }
@@ -208,35 +260,66 @@ body {
 }
 
 .trex-field__label {
-  font-family: "Open Sans", sans-serif;
+  font-family: var(--trex-font);
   font-size: 14px;
+  font-weight: 700;
+  color: var(--trex-text);
 }
 
 .trex-field__input {
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(31, 41, 55, 0.18);
+  border-radius: 14px;
   font-size: 14px;
   padding: 10px 12px;
+  outline: none;
+  transition: box-shadow 150ms ease, border-color 150ms ease;
+}
+
+.trex-field__input:focus {
+  border-color: rgba(124, 92, 255, 0.6);
+  box-shadow: 0 0 0 4px var(--trex-outline);
 }
 
 .trex-button {
-  background: rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(31, 41, 55, 0.14);
+  border-radius: 14px;
   cursor: pointer;
+  font-family: var(--trex-font);
   font-size: 14px;
+  font-weight: 800;
   padding: 10px 12px;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  transition: transform 120ms ease, box-shadow 120ms ease,
+    background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.trex-button:hover {
+  transform: translateY(-1px);
+}
+
+.trex-button:active {
+  transform: translateY(0);
+  box-shadow: 0 5px 14px rgba(15, 23, 42, 0.08);
+}
+
+.trex-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
 }
 
 .trex-button--primary {
-  background: #111;
-  border-color: #111;
+  background: linear-gradient(135deg, var(--trex-accent-1), var(--trex-accent-2));
+  border-color: transparent;
   color: #fff;
+  box-shadow: 0 12px 28px rgba(124, 92, 255, 0.28);
 }
 
 .trex-status {
-  color: rgba(0, 0, 0, 0.7);
-  font-family: "Open Sans", sans-serif;
+  color: var(--trex-muted);
+  font-family: var(--trex-font);
   font-size: 12px;
   margin-top: 10px;
   min-height: 16px;
@@ -254,14 +337,15 @@ body {
 }
 
 .trex-leaderboard__title {
-  font-family: "Open Sans", sans-serif;
+  font-family: var(--trex-font);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 800;
 }
 
 .trex-leaderboard__list {
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(31, 41, 55, 0.12);
+  border-radius: 16px;
   margin: 0;
   max-height: 260px;
   overflow: auto;
@@ -272,24 +356,28 @@ body {
   align-items: center;
   display: flex;
   justify-content: space-between;
-  padding: 6px 0;
+  padding: 8px 10px;
+  border-radius: 999px;
 }
 
 .trex-leaderboard__item + .trex-leaderboard__item {
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-top: none;
+  margin-top: 6px;
 }
 
 .trex-leaderboard__item--highlight {
-  font-weight: 700;
+  font-weight: 900;
+  background: rgba(124, 92, 255, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(124, 92, 255, 0.22);
 }
 
 .trex-leaderboard__item--empty {
-  color: rgba(0, 0, 0, 0.6);
-  padding: 10px 0;
+  color: var(--trex-muted);
+  padding: 10px 10px;
 }
 
 .trex-leaderboard__name,
 .trex-leaderboard__score {
-  font-family: "Open Sans", sans-serif;
+  font-family: var(--trex-font);
   font-size: 13px;
 }
