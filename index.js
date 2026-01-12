@@ -246,7 +246,7 @@
       document.addEventListener(
         Runner.events.KEYDOWN,
         function (e) {
-          if (Runner.keycodes.JUMP[e.keyCode]) {
+          if (Runner.keycodes.RESTART[e.keyCode]) {
             this.containerEl.classList.add(Runner.classes.SNACKBAR_SHOW);
             document.querySelector(".icon").classList.add("icon-disabled");
           }
@@ -731,21 +731,35 @@
       }
 
       if (e.target != this.detailsButton) {
-        if (
-          !this.crashed &&
-          (Runner.keycodes.JUMP[e.keyCode] ||
-            e.type == Runner.events.TOUCHSTART)
-        ) {
-          if (!this.playing) {
+        if (!this.crashed) {
+          var isStartKey = Runner.keycodes.RESTART[e.keyCode];
+          var isJumpKey =
+            Runner.keycodes.JUMP[e.keyCode] ||
+            e.type == Runner.events.TOUCHSTART;
+          var startedNow = false;
+
+          // Start the game with Enter (keyboard) or touch; don't start with Space.
+          if (
+            !this.playing &&
+            (isStartKey || e.type == Runner.events.TOUCHSTART)
+          ) {
             this.loadSounds();
             this.playing = true;
             this.update();
+            startedNow = true;
             if (window.errorPageController) {
               errorPageController.trackEasterEgg();
             }
           }
-          //  Play sound effect and jump on starting the game for the first time.
-          if (!this.tRex.jumping && !this.tRex.ducking) {
+
+          // Jump only with the jump keys (Space/Up) when running.
+          // On start, also jump for Enter/touch to preserve the original UX.
+          if (
+            !this.tRex.jumping &&
+            !this.tRex.ducking &&
+            ((this.playing && isJumpKey) ||
+              (startedNow && (isStartKey || e.type == Runner.events.TOUCHSTART)))
+          ) {
             this.playSound(this.soundFx.BUTTON_PRESS);
             this.tRex.startJump(this.currentSpeed);
           }
@@ -813,14 +827,9 @@
         this.tRex.speedDrop = false;
         this.tRex.setDuck(false);
       } else if (this.crashed) {
-        // Check that enough time has elapsed before allowing jump key to restart.
-        var deltaTime = getTimeStamp() - this.time;
-
         if (
           Runner.keycodes.RESTART[keyCode] ||
-          this.isLeftClickOnCanvas(e) ||
-          (deltaTime >= this.config.GAMEOVER_CLEAR_TIME &&
-            Runner.keycodes.JUMP[keyCode])
+          this.isLeftClickOnCanvas(e)
         ) {
           this.restart();
         }

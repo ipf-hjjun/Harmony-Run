@@ -302,6 +302,14 @@
         if (e.keyCode === 32) {
           e.preventDefault();
         }
+
+        // Start with Enter from the input.
+        if (e.keyCode === 13) {
+          e.preventDefault();
+          var normalized = normalizeName(nameInputEl.value);
+          if (normalized) setPlayerName(normalized);
+          maybeStartFromOverlay();
+        }
       });
 
       nameInputEl.addEventListener("input", function () {
@@ -348,8 +356,8 @@
         if (!isOverlayVisible(overlayEl)) return;
         if (document.activeElement === nameInputEl) return;
 
-        // Space / Up.
-        if (e.keyCode === 32 || e.keyCode === 38) {
+        // Enter.
+        if (e.keyCode === 13) {
           if (!ensureNameOrExplain()) {
             e.preventDefault();
             e.stopPropagation();
@@ -369,7 +377,7 @@
       showOverlay(overlayEl);
       setHidden(leaderboardEl, false);
       setText(titleEl, "Game Over");
-      setOverlayStatus("Press Space to restart.");
+      setOverlayStatus("Press Enter to restart.");
 
       (async function () {
         var submitResult = await submitScore(score);
@@ -389,7 +397,7 @@
       if (isOverlayVisible(overlayEl)) {
         hideOverlay(overlayEl);
       }
-      setText(titleEl, "Press Space to start");
+      setText(titleEl, "Press Enter to start");
       setHidden(leaderboardEl, true);
       setOverlayStatus("");
       setSubmitStatus("");
