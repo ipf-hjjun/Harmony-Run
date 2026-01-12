@@ -102,26 +102,26 @@
    * @enum {number}
    */
   Runner.config = {
-    ACCELERATION: 0.001,
+    ACCELERATION: 0.0005,
     BG_CLOUD_SPEED: 0.2,
     BOTTOM_PAD: 10,
-    CLEAR_TIME: 3000,
+    CLEAR_TIME: 2000,
     CLOUD_FREQUENCY: 0.5,
     GAMEOVER_CLEAR_TIME: 750,
-    GAP_COEFFICIENT: 0.6,
+    GAP_COEFFICIENT: 0.42,
     GRAVITY: 0.6,
     INITIAL_JUMP_VELOCITY: 12,
     INVERT_FADE_DURATION: 12000,
     INVERT_DISTANCE: 700,
     MAX_BLINK_COUNT: 3,
     MAX_CLOUDS: 6,
-    MAX_OBSTACLE_LENGTH: 3,
+    MAX_OBSTACLE_LENGTH: 4,
     MAX_OBSTACLE_DUPLICATION: 2,
-    MAX_SPEED: 13,
+    MAX_SPEED: 9.5,
     MIN_JUMP_HEIGHT: 35,
     MOBILE_SPEED_COEFFICIENT: 1.2,
     RESOURCE_TEMPLATE_ID: "audio-resources",
-    SPEED: 6,
+    SPEED: 4.5,
     SPEED_DROP_COEFFICIENT: 3,
     ARCADE_MODE_INITIAL_TOP_POSITION: 35,
     ARCADE_MODE_TOP_POSITION_PERCENT: 0.1,
@@ -1455,7 +1455,7 @@
    * Coefficient for calculating the maximum gap.
    * @const
    */
-  Obstacle.MAX_GAP_COEFFICIENT = 1.5;
+  Obstacle.MAX_GAP_COEFFICIENT = 1.25;
 
   /**
    * Maximum obstacle grouping count.
@@ -1635,8 +1635,8 @@
       width: 17,
       height: 35,
       yPos: 105,
-      multipleSpeed: 4,
-      minGap: 120,
+      multipleSpeed: 3.5,
+      minGap: 90,
       minSpeed: 0,
       collisionBoxes: [
         new CollisionBox(0, 7, 5, 27),
@@ -1649,8 +1649,8 @@
       width: 25,
       height: 50,
       yPos: 90,
-      multipleSpeed: 7,
-      minGap: 120,
+      multipleSpeed: 5.5,
+      minGap: 95,
       minSpeed: 0,
       collisionBoxes: [
         new CollisionBox(0, 12, 7, 38),
@@ -1666,7 +1666,7 @@
       yPosMobile: [100, 50], // Variable height mobile.
       multipleSpeed: 999,
       minSpeed: 8.5,
-      minGap: 150,
+      minGap: 120,
       collisionBoxes: [
         new CollisionBox(15, 15, 16, 5),
         new CollisionBox(18, 21, 24, 6),
